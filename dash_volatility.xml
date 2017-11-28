@@ -1,0 +1,229 @@
+<dashboard>
+  <label>Volatility</label>
+  <row>
+    <panel>
+      <single>
+        <title>Nombre d'events // Poste TODO</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_*" | stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <chart>
+        <title>Répartition des Noms</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_pslist" | stats count by Name</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <table>
+        <title>PID to Name</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_*" | stats count by PID, Name, PPID, host | fields PID, Name, PPID, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel>
+      <chart>
+        <title>Nombre d'enfant</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_pslist" | stats count by PPID</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <table>
+        <title>Poste avec lsass.exe sup à 1</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_psxview" Name="lsass.exe" | stats count by host | where count&gt;1</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Exit process</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_*" Exit!="" | stats count by PPID, PID, Name, Exit, Start, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Exit in psxview</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_psxview"  ExitTime!="" | stats count by PID, Name, ExitTime, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel>
+      <chart>
+        <title>Le démarrage</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_*" | stats count by Start</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <single>
+        <title>Nombre de Pscan end !pslist</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_psxview" (pslist="false" AND psscan="true") | stats count</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+    <panel>
+      <table>
+        <title>Psxiewn not pslist but in psscan</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_psxview" (pslist="false" AND psscan="true") | stats count by Name, PID, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Pscan not Pslist Start Time</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_psscan" | stats count by Name, PID, host, TimeCreated</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Not pslist and psscan but in thread</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_psxview" ( pslist="false" AND psscan="false" AND thrdproc="true" OR pspcid="true" OR csrss="true" OR session="true" OR deskthrd="true") | stats count by Offset_P,PID, Name, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="dataOverlayMode">highlow</option>
+        <option name="drilldown">row</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="totalsRow">false</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Connections</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_connections" | stats count by PID, LocalAddress, RemoteAddress, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Sockets</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_sockets" | stats count by PID, Address, Protocol, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Nb Path Dll !Windows\System32</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_dlllist" Path!="C:\\WINDOWS\\system32\\*"| stats count by host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Dll Path !Windows\System32</title>
+        <search>
+          <query>index="memoire"  sourcetype="volatility_dlllist" Path!="C:\\WINDOWS\\system32\\*"| stats list(Pid) count by Path, host | rename list(Pid) as PIDs</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Map drive par Pid et poste</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_handles"  Type=file Details="\\Device\\Mup" | stats count by Pid, Details, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
