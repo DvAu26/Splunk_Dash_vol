@@ -96,7 +96,7 @@
       <table>
         <title>Exit in pslist</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_pslist" Exit!="" | table PPID, PID, Name, Exit, Start, host</query>
+          <query>index="memoire"   host=$Computer$  sourcetype="volatility_pslist" Exit!="" | table PPID, PID, Name, Start, Exit, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -301,6 +301,19 @@
         <option name="drilldown">none</option>
       </table>
     </panel>
+    <panel>
+      <table>
+        <title>Sockets Handles</title>
+        <search>
+          <query>index="memoire"   host=$Computer$ Pid=$PID$ sourcetype="volatility_handles*"  Type=file Details="\\Device\\RawIp*" | stats count by Pid, Details, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
   </row>
   <row>
     <panel>
@@ -332,6 +345,129 @@
         <title>LdrModules</title>
         <search>
           <query>index="memoire"  host=$Computer$  sourcetype="volatility_ldrmodules_verbose" | where InLoad!=InInit OR InLoad!=InMem OR InInit!=InMem | table Pid,Process,LoadPath, InitPath, MemPath, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Service Path ! Binary TODO better</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_services_verbose" host=$Computer$ PID=$PID$ | where BinaryPath!=ImagePath | table PID, ServiceName, BinaryPath, ImagePath, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>CallBacks easy</title>
+        <search>
+          <query>index="memoire" host=$Computer$ sourcetype="volatility_callbacks" Module!="*.sys" | table Type, Callback, Module, Details, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>CallBack Modules a chouffer // Todo</title>
+        <search>
+          <query>index="memoire" host=$Computer$ sourcetype="volatility_callbacks" (Type="PsSet*NotifyRoutine" OR Type="IoRegisterFsRegistrationChange" OR Type="KeRegisterBugCheck*Callback" OR Type="CmRegisterCallback*") | table Type, Callback, Module, Details, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Callbacks Module UNKNOWN</title>
+        <search>
+          <query>index="memoire" host=$Computer$ sourcetype="volatility_callbacks" Module="UNKNOWN" | table Type, Callback, Module, Details, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Timers UNKNOWN</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_timers" host=$Computer$ Module="UNKNOWN" | table Offset_V, Period_ms, Module, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Timer Offset Module not *.sys et Period &gt; 0</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_timers" host=$Computer$ Module!="*.sys"| table Offset_V, Period_ms, Module, host | where Period_ms &gt; 0</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Driverscan No Name</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_driverscan" host=$Computer$ NOT Name!="" | table Offset_P, Start, Size, ServiceKey, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Modscan with no File</title>
+        <search>
+          <query>index="memoire" host=$Computer$ sourcetype="volatility_modscan" NOT File!="" Size!="0x1" | table Offset_P, Name,Base, Size, File, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Driver and Module Unknown</title>
+        <search>
+          <query>index="memoire" host=$Computer$ sourcetype="volatility_driver_module" Module="UNKNOWN" AND NOT(ServiceKey!="") | table Module, Driver, AltName, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
