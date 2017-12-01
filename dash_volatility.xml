@@ -54,7 +54,7 @@
       <table>
         <title>PID to Name</title>
         <search>
-          <query>index="memoire"  host=$Computer$ sourcetype="volatility_*" | stats count by PID, Name, PPID, host | fields PID, Name, PPID, host</query>
+          <query>index="memoire"  host=$Computer$ PID=$PID$ sourcetype="volatility_*" | stats count by PID, Name, PPID, host | fields PID, Name, PPID, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -67,7 +67,7 @@
       <chart>
         <title>Nombre d'enfant</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_pslist" | stats count by PPID</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$ sourcetype="volatility_pslist" | stats count by PPID</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -96,10 +96,11 @@
       <table>
         <title>Exit in pslist</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_pslist" Exit!="" | table PPID, PID, Name, Start, Exit, host</query>
+          <query>index="memoire"   host=$Computer$  PID=$PID$ sourcetype="volatility_pslist" Exit!="" | table PPID, PID, Name, Start, Exit, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
       </table>
@@ -108,7 +109,7 @@
       <table>
         <title>Exit in Psscan</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_psscan" ExitTime!="" | table PPID, PID, Name, ExitTime, TimeCreated, host</query>
+          <query>index="memoire"   host=$Computer$  PID=$PID$ sourcetype="volatility_psscan" ExitTime!="" | table PPID, PID, Name, ExitTime, TimeCreated, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -121,10 +122,11 @@
       <table>
         <title>Exit in psxview</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_psxview"  ExitTime!="" |table PID, Name, ExitTime, host</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$   sourcetype="volatility_psxview"  ExitTime!="" |table PID, Name, ExitTime, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
       </table>
@@ -133,7 +135,7 @@
       <chart>
         <title>Le démarrage</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_*" | stats count by Start</query>
+          <query>index="memoire"   host=$Computer$  PID=$PID$ sourcetype="volatility_*" | stats count by Start</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -152,7 +154,7 @@
       <single>
         <title>Nombre de Pscan end !pslist</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_psxview" (pslist="false" AND psscan="true") | stats count</query>
+          <query>index="memoire"   host=$Computer$ sourcetype="volatility_psxview" (pslist="false" AND psscan="true") | stats count</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -164,10 +166,11 @@
       <table>
         <title>Psxiewn not pslist but in psscan</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_psxview" (pslist="false" AND psscan="true") | stats count by Name, PID, host</query>
+          <query>index="memoire"   host=$Computer$  PID=$PID$ sourcetype="volatility_psxview" (pslist="false" AND psscan="true") | stats count by Name, PID, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
       </table>
@@ -176,10 +179,11 @@
       <table>
         <title>Pscan not Pslist Start Time</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_psscan" | stats count by Name, PID, host, TimeCreated</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$   sourcetype="volatility_psscan" | stats count by Name, PID, host, TimeCreated</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
       </table>
@@ -190,10 +194,11 @@
       <table>
         <title>Not pslist and psscan but in thread</title>
         <search>
-          <query>index="memoire"   host=$Computer$   sourcetype="volatility_psxview" ( pslist="false" AND psscan="false" AND thrdproc="true" OR pspcid="true" OR csrss="true" OR session="true" OR deskthrd="true") | stats count by Offset_P,PID, Name, host</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$   sourcetype="volatility_psxview" ( pslist="false" AND psscan="false" AND thrdproc="true" OR pspcid="true" OR csrss="true" OR session="true" OR deskthrd="true") | stats count by Offset_P,PID, Name, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="dataOverlayMode">highlow</option>
         <option name="drilldown">row</option>
         <option name="percentagesRow">false</option>
@@ -205,29 +210,48 @@
       <table>
         <title>Connections</title>
         <search>
-          <query>index="memoire"   host=$Computer$ sourcetype="volatility_connections" | stats count by PID, LocalAddress, RemoteAddress, host</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$ sourcetype="volatility_connections" | stats count by PID, LocalAddress, RemoteAddress, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
       </table>
     </panel>
     <panel>
       <table>
         <title>Sockets</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_sockets" | stats count by PID, Address, Protocol, host</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$  sourcetype="volatility_sockets" | stats count by PID, Address, Protocol, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
       </table>
     </panel>
     <panel>
       <table>
         <title>Netscan print</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_netscan" | stats count by Owner,State,PID, LocalAddr, ForeignAddr, host</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$  sourcetype="volatility_netscan" | stats count by Owner,State,PID, LocalAddr, ForeignAddr, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>ApiHooks TODO better parseur</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_apihook" host=$Computer$ Instructions="*JMP*" | table HookAdress, HookType, VictimMod, ExeHook, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -240,12 +264,14 @@
       <table>
         <title>Nb Path Dll !Windows\System32</title>
         <search>
-          <query>index="memoire"    host=$Computer$  sourcetype="volatility_dlllist" Path!="C:\\WINDOWS\\system32\\*"| stats count by host</query>
+          <query>index="memoire"    host=$Computer$ Pid=$PID$ sourcetype="volatility_dlllist" Path!="C:\\WINDOWS\\system32\\*"| stats count by host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="dataOverlayMode">none</option>
         <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
         <option name="rowNumbers">false</option>
         <option name="wrap">true</option>
       </table>
@@ -254,7 +280,7 @@
       <table>
         <title>Dll Path !Windows\System32</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_dlllist" Path!="C:\\WINDOWS\\system32\\*"| stats list(Pid) count by Path, host | rename list(Pid) as PIDs</query>
+          <query>index="memoire"   host=$Computer$ Pid=$PID$ sourcetype="volatility_dlllist" Path!="C:\\WINDOWS\\system32\\*"| stats list(Pid) count by Path, host | rename list(Pid) as PIDs</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -267,7 +293,7 @@
       <table>
         <title>Malfind MZ JMP RET CALL JMPFAR</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_malfind" *4d5a* OR *e9* OR *e8* OR *a9* OR *c3* OR *cb* OR *ff5f* | table PID, Process,host</query>
+          <query>index="memoire"   host=$Computer$ PID=$PID$ sourcetype="volatility_malfind" *4d5a* OR *e9* OR *e8* OR *a9* OR *c3* OR *cb* OR *ff5f* | table PID, Process,host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -281,7 +307,7 @@
       <table>
         <title>Malfind text JMP XOR</title>
         <search>
-          <query>index="memoire"   host=$Computer$  sourcetype="volatility_malfind_text" Instructions="*JMP*" OR Instructions="*XOR*" | stats count by PID, Process, Offset_P, host</query>
+          <query>index="memoire"   host=$Computer$  PID=$PID$ sourcetype="volatility_malfind_text" Instructions="*JMP*" OR Instructions="*XOR*" | stats count by PID, Process, Offset_P, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -294,11 +320,13 @@
       <table>
         <title>Map drive par Pid et poste</title>
         <search>
-          <query>index="memoire"   host=$Computer$ sourcetype="volatility_handles"  Type=file Details="\\Device\\Mup" | stats count by Pid, Details, host</query>
+          <query>index="memoire"   host=$Computer$ Pid=$PID$ sourcetype="volatility_handles"  Type=file Details="\\Device\\Mup" | stats count by Pid, Details, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
+        <option name="count">10</option>
         <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
       </table>
     </panel>
     <panel>
@@ -320,22 +348,24 @@
       <table>
         <title>Clef de Registre des processus</title>
         <search>
-          <query>index="memoire"  host=$Computer$  sourcetype="volatility_handles" Type="Key" | stats count by Details, Pid, host</query>
+          <query>index="memoire"  host=$Computer$ Pid=$PID$  sourcetype="volatility_handles" Type="Key" | stats count by Details, Pid, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
         <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
       </table>
     </panel>
     <panel>
       <table>
         <title>Clef Run</title>
         <search>
-          <query>index="memoire"  host=$Computer$  sourcetype="volatility_handles" Type="Key" RUN | stats count by Details, Pid, host</query>
+          <query>index="memoire"  host=$Computer$  Pid=$PID$ sourcetype="volatility_handles" Type="Key" *RUN* | stats count by Details, Pid, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
         <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
       </table>
     </panel>
   </row>
@@ -344,7 +374,7 @@
       <table>
         <title>LdrModules</title>
         <search>
-          <query>index="memoire"  host=$Computer$  sourcetype="volatility_ldrmodules_verbose" | where InLoad!=InInit OR InLoad!=InMem OR InInit!=InMem | table Pid,Process,LoadPath, InitPath, MemPath, host</query>
+          <query>index="memoire"  host=$Computer$  Pid=$PID$ sourcetype="volatility_ldrmodules_verbose" | where InLoad!=InInit OR InLoad!=InMem OR InInit!=InMem | table Pid,Process,LoadPath, InitPath, MemPath, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -359,7 +389,7 @@
       <table>
         <title>Service Path ! Binary TODO better</title>
         <search>
-          <query>index="memoire" sourcetype="volatility_services_verbose" host=$Computer$ PID=$PID$ | where BinaryPath!=ImagePath | table PID, ServiceName, BinaryPath, ImagePath, host</query>
+          <query>index="memoire" sourcetype="volatility_services_verbose" host=$Computer$ PID=$PID$ | where BinaryPath!=ImagePath | stats count by PID, ServiceName, BinaryPath, ImagePath, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -474,6 +504,19 @@
         <option name="count">10</option>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Atomscan statistique</title>
+        <search>
+          <query>index="memoire" host=$Computer$ sourcetype="volatility_atomscan" | stats count by Name</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
       </table>
     </panel>
   </row>
