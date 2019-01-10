@@ -27,9 +27,9 @@
   <row>
     <panel>
       <single>
-        <title>Nombre d'events // Poste TODO</title>
+        <title>Nombre d'events by Host</title>
         <search>
-          <query>index="memoire"  host=$Computer$ sourcetype="volatility_*" | stats count</query>
+          <query>index="memoire"  host=$Computer$ sourcetype="volatility_*" | stats count by host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -301,7 +301,7 @@
         <option name="refresh.display">progressbar</option>
       </table>
     </panel>
-  </row>
+  z</row>
   <row>
     <panel>
       <table>
@@ -374,7 +374,7 @@
       <table>
         <title>LdrModules</title>
         <search>
-          <query>index="memoire"  host=$Computer$  Pid=$PID$ sourcetype="volatility_ldrmodules_verbose_text" | where InLoad!=InInit OR InLoad!=InMem OR InInit!=InMem | table Pid,Process,LoadPath, InitPath, MemPath, host</query>
+          <query>index="memoire"  host=$Computer$  Pid=$PID$ sourcetype="volatility_ldrmodules_verbose_csv" | where InLoad!=InInit OR InLoad!=InMem OR InInit!=InMem | table Pid,Process,LoadPath, InitPath, MemPath, host</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
