@@ -1,5 +1,5 @@
 <form>
-  <label>Volatility</label>
+  <label>volatility</label>
   <fieldset submitButton="false" autoRun="true">
     <input type="dropdown" token="Computer">
       <label>Computer</label>
@@ -261,6 +261,60 @@
   </row>
   <row>
     <panel>
+      <chart>
+        <title>ApiHooks Stats</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_apihooks_csv" host=$Computer$ | stats count by host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>ApiHooks Stats Inline</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_apihooks_csv" host=$Computer$ HookType="Inline/Trampoline" | stats count by host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>ApiHooks Stats Unknown</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_apihooks_csv" host=$Computer$ HookingModule="*unknown*" | stats count by host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>ApiHooks Address with unknown Module</title>
+        <search>
+          <query>index="memoire" sourcetype="volatility_apihooks_text" host=$Computer$ HookingModule="*unknown*" | table HookAddress, VictimModule, Function, PID, Process, host</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
       <table>
         <title>Nb Path Dll !Windows\System32</title>
         <search>
@@ -301,7 +355,7 @@
         <option name="refresh.display">progressbar</option>
       </table>
     </panel>
-  z</row>
+  </row>
   <row>
     <panel>
       <table>
