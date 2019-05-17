@@ -26,7 +26,7 @@
   </fieldset>
   <row>
     <panel>
-      <single>
+      <table>
         <title>Nombre d'events by Host</title>
         <search>
           <query>index="memoire"  host=$Computer$ sourcetype="volatility_*" | stats count by host</query>
@@ -35,7 +35,7 @@
         </search>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
-      </single>
+      </table>
     </panel>
     <panel>
       <chart>
